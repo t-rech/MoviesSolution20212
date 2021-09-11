@@ -19,7 +19,14 @@ namespace MoviesConsoleApp
             Console.WriteLine();
             Console.WriteLine("1. Listar o nome de todos personagens desempenhados por um determinado ator, incluindo a informação de qual o título do filme e o diretor");
 
+            var filmes2 = from f in _db.Movies
+                          where f.Genre.Name == "Action"
+                          select f.Director;
 
+            foreach (var nome in filmes2)
+            {
+                Console.WriteLine("\t{0}", nome);
+            }
             Console.WriteLine();
             Console.WriteLine("2. Mostrar o nome e idade de todos atores que desempenharam um determinado personagem(por exemplo, quais os atores que já atuaram como '007' ?");
 
