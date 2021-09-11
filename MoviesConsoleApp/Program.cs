@@ -67,7 +67,11 @@ namespace MoviesConsoleApp
 
             Console.WriteLine();
             Console.WriteLine("4. Mostrar o nome e a data de nascimento do ator mais idoso");
+            var q4 = _db.Actors.OrderBy(a => a.DateBirth).First();
 
+            Console.WriteLine("\t Nome: {0} Data de Nascimento: {1}", q4.Name, q4.DateBirth);
+
+                     
             Console.WriteLine();
             Console.WriteLine("5. Mostrar o nome e a data de nascimento do ator mais novo a atuar em um determinado gênero");
 
