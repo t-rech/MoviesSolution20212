@@ -43,7 +43,7 @@ namespace MoviesConsoleApp
                              a.Actor.DateBirth
                          };
 
-            foreach (var ator in atores.Distinct())
+            foreach (var ator in atores)
             {
                 int idade = 0;
                 idade = DateTime.Now.Year - ator.DateBirth.Year;
@@ -55,6 +55,15 @@ namespace MoviesConsoleApp
 
             Console.WriteLine();
             Console.WriteLine("3. Informar qual o ator desempenhou mais vezes um determinado personagem(por exemplo: qual o ator que realizou mais filmes como o 'agente 007'");
+            var q3 = from c in _db.Characters
+                     where c.Character == "James Bond"
+                     group c by c.Actor.Name into grupo
+                     select new
+                     {
+                         Nome = grupo.Key,
+                         NroFilmes = grupo.Count()
+                     };
+            Console.WriteLine("\t O ator que realizou mais filmes como o 'agente 007' foi: {0}", q3.OrderByDescending( q => q.NroFilmes).First().Nome);
 
             Console.WriteLine();
             Console.WriteLine("4. Mostrar o nome e a data de nascimento do ator mais idoso");
