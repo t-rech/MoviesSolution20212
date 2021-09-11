@@ -74,20 +74,63 @@ namespace MoviesConsoleApp
                      
             Console.WriteLine();
             Console.WriteLine("5. Mostrar o nome e a data de nascimento do ator mais novo a atuar em um determinado gênero");
+            var q5 = _db.Characters
+                        .Include(c => c.Actor)
+                        .Where(c => c.Movie.Genre.Name == "Action")
+                        .OrderByDescending(c => c.Actor.DateBirth)
+                        .First();
+
+            Console.WriteLine("\t Nome: {0} Data de Nascimento: {1}", q5.Actor.Name, q5.Actor.DateBirth);
 
             Console.WriteLine();
             Console.WriteLine("6. Mostrar o valor médio das avaliações dos filmes de um determinado ator diretor");
+            var q6 = from m in _db.Movies
+                     where m.Director == "Quentin Tarantino"
+                     group m by m.Director into grp
+                     select new
+                     {
+                         Diretor = grp.Key,
+                         Avaliacao = grp.Average(e => e.Rating)
+                     };
+
+            Console.WriteLine("\t Diretor: {0} Avalicao: {1}", q6.First().Diretor, q6.First().Avaliacao);
+            
 
             Console.WriteLine();
             Console.WriteLine("7. Qual o elenco do filme pior avaliado ?");
+            var q7a = from m in _db.Movies
+                      orderby m.Rating
+                      select m;
+            var q7a_result = q7a.First();
 
+            var q7b = from c in _db.Characters.Include(c => c.Actor)
+                      where c.MovieId == q7a_result.MovieId
+                      select c;
+
+            Console.WriteLine("\t Filme: {0} Avalicao: {1}", q7a_result.Title, q7a_result.Rating);
+            foreach (var elenco in q7b)
+            {
+                Console.WriteLine("\t Ator: {0}", elenco.Actor.Name);
+            }
             Console.WriteLine();
             Console.WriteLine("8. Qual o elenco do filme com o maior faturamento?");
+            var q8a = from m in _db.Movies
+                      orderby m.Gross
+                      select m;
+            var q8a_result = q8a.Last();
 
+            var q8b = from c in _db.Characters.Include(c => c.Actor)
+                      where c.MovieId == q8a_result.MovieId
+                      select c;
 
+            Console.WriteLine("\t Filme: {0} Faturamento: {1}", q8a_result.Title, q8a_result.Gross);
+            foreach (var elenco in q8b)
+            {
+                Console.WriteLine("\t Ator: {0}", elenco.Actor.Name);
+            }
         }
 
-            static void Main_presencial(String[] args)
+        static void Main_presencial(String[] args)
         {
             // acesso ao EF serah realizado pela variavel _db
             // essa dependencia da camada de apresentacao com
