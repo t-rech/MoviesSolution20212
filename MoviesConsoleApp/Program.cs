@@ -19,17 +19,39 @@ namespace MoviesConsoleApp
             Console.WriteLine();
             Console.WriteLine("1. Listar o nome de todos personagens desempenhados por um determinado ator, incluindo a informação de qual o título do filme e o diretor");
 
-            var filmes2 = from f in _db.Movies
-                          where f.Genre.Name == "Action"
-                          select f.Director;
+            var personagens = from c in _db.Characters
+                          where c.Actor.Name == "Tom Hanks"
+                          select new
+                          {
+                              c.Actor.Name,
+                              c.Movie.Title,
+                              c.Movie.Director
+                          };
 
-            foreach (var nome in filmes2)
+            foreach (var personagem in personagens)
             {
-                Console.WriteLine("\t{0}", nome);
+                    Console.WriteLine("\tPersonagem: {0}\t Titulo do Filme: {1}\t Diretor: {2}", personagem.Name, personagem.Title, personagem.Director);
+             
             }
             Console.WriteLine();
             Console.WriteLine("2. Mostrar o nome e idade de todos atores que desempenharam um determinado personagem(por exemplo, quais os atores que já atuaram como '007' ?");
+            var atores = from a in _db.Characters
+                         where a.Character == "James Bond"
+                         select new
+                         {
+                             a.Actor.Name,
+                             a.Actor.DateBirth
+                         };
 
+            foreach (var ator in atores.Distinct())
+            {
+                int idade = 0;
+                idade = DateTime.Now.Year - ator.DateBirth.Year;
+                if (DateTime.Now.DayOfYear < ator.DateBirth.DayOfYear) idade--;
+
+                Console.WriteLine("\tNome do Ator: {0}\t Idade: {1}", ator.Name, idade);
+
+            }
 
             Console.WriteLine();
             Console.WriteLine("3. Informar qual o ator desempenhou mais vezes um determinado personagem(por exemplo: qual o ator que realizou mais filmes como o 'agente 007'");
